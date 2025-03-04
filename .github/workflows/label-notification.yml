@@ -26,11 +26,11 @@ jobs:
           EMAIL_TO: "prince@empowerlearning.net"
           EMAIL_FROM: "noreply@example.com"
         run: |
-          curl --request POST \
-          --url https://api.sendgrid.com/v3/mail/send \
-          --header "Authorization: Bearer $SENDGRID_API_KEY" \
-          --header "Content-Type: application/json" \
-          --data @- <<EOF
+          RESPONSE=$(curl --write-out "\nHTTP_STATUS=%{http_code}" --silent --output response.json --request POST \
+            --url https://api.sendgrid.com/v3/mail/send \
+            --header "Authorization: Bearer $SENDGRID_API_KEY" \
+            --header "Content-Type: application/json" \
+            --data @- <<EOF
           {
             "personalizations": [{"to": [{"email": "$EMAIL_TO"}]}],
             "from": {"email": "$EMAIL_FROM"},
@@ -41,3 +41,8 @@ jobs:
             }]
           }
           EOF
+          )
+          
+          echo "SendGrid Response:"
+          cat response.json
+          echo "$RESPONSE"
