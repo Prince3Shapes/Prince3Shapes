@@ -1,0 +1,38 @@
+name: Notify on Label Added to PR
+
+on:
+  pull_request:
+    types: [labeled]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repository
+        uses: actions/checkout@v3   
+
+      - name: Check PR Label
+        if: ${{ github.event.label.name == 'Ready for code review' }}
+        run: |
+          echo "PR #${{ github.event.pull_request.number }} is ready for code review"
+          echo "Label: ${{ github.event.label.name }}"
+          echo "PR Title: ${{ github.event.pull_request.title }}"
+          echo "PR URL: ${{ github.event.pull_request.html_url }}"
+
+      - name: Send Email Notification
+        if: ${{ github.event.label.name == 'Ready for code review' }}
+        env:
+          SENDGRID_API_KEY: "SeMbAFeNRfKqw_1wseoCkg"
+          EMAIL_TO: "prince@empowerlearning.net"
+          EMAIL_FROM: "noreply@example.com"
+        run: |
+          curl --request POST \
+          --url https://api.sendgrid.com/v3/mail/send \
+          --header "Authorization: Bearer $SENDGRID_API_KEY" \
+          --header 'Content-Type: application/json' \
+          --data '{
+            "personalizations": [{"to": [{"email": "'"$EMAIL_TO"'"}]}],
+            "from": {"email": "'"$EMAIL_FROM"'"},
+            "subject": "PR Ready for Code Review",
+            "content": [{"type": "text/plain", "value": "A pull request has been labeled as Ready for Code Review.\n\nPR Number: #${{ github.event.pull_request.number }}\nTitle: ${{ github.event.pull_request.title }}\nURL: ${{ github.event.pull_request.html_url }}"}]
+          }'
