@@ -24,7 +24,7 @@ jobs:
         env:
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
           EMAIL_TO: "prince@empowerlearning.net"
-          EMAIL_FROM: "noreply@example.com"
+          EMAIL_FROM: "prince@empowerlearning.net"
         run: |
           RESPONSE=$(curl --write-out "\nHTTP_STATUS=%{http_code}" --silent --output response.json --request POST \
             --url https://api.sendgrid.com/v3/mail/send \
