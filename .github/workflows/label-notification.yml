@@ -24,7 +24,7 @@ jobs:
         env:
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
           EMAIL_TO_1: "prince@empowerlearning.net"
-          EMAIL_TO_2: "anton@empowerlearning.com"
+          EMAIL_TO_2: "anton@empowerlearning.net"
           EMAIL_FROM: "prince@empowerlearning.net"
         run: |
           RESPONSE=$(curl --write-out "\nHTTP_STATUS=%{http_code}" --silent --output response.json --request POST \
