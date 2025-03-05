@@ -24,7 +24,7 @@ jobs:
         env:
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
           EMAIL_TO_1: "prince@empowerlearning.net"
-          EMAIL_TO_2: "anton@empowerlearning.com"  # Add the second recipient here
+          EMAIL_TO_2: "anton@empowerlearning.com"
           EMAIL_FROM: "prince@empowerlearning.net"
         run: |
           RESPONSE=$(curl --write-out "\nHTTP_STATUS=%{http_code}" --silent --output response.json --request POST \
@@ -33,22 +33,26 @@ jobs:
             --header "Content-Type: application/json" \
             --data @- <<EOF
           {
-            "personalizations": [{
-              "to": [
-                {"email": "$EMAIL_TO_1"},
-                {"email": "$EMAIL_TO_2"}  # Second recipient added
-              ]
-            }],
-            "from": {"email": "$EMAIL_FROM"},
+            "personalizations": [
+              {
+                "to": [
+                  { "email": "$EMAIL_TO_1" },
+                  { "email": "$EMAIL_TO_2" }
+                ]
+              }
+            ],
+            "from": { "email": "$EMAIL_FROM" },
             "subject": "PR Ready for Code Review",
-            "content": [{
-              "type": "text/plain",
-              "value": "A pull request has been labeled as Ready for Code Review.\n\nPR Number: #${{ github.event.pull_request.number }}\nTitle: ${{ github.event.pull_request.title }}\nURL: ${{ github.event.pull_request.html_url }}"
-            }]
+            "content": [
+              {
+                "type": "text/plain",
+                "value": "A pull request has been labeled as Ready for Code Review.\n\nPR Number: #${{ github.event.pull_request.number }}\nTitle: ${{ github.event.pull_request.title }}\nURL: ${{ github.event.pull_request.html_url }}"
+              }
+            ]
           }
           EOF
           )
-          
+
           echo "SendGrid Response:"
           cat response.json
           echo "$RESPONSE"
