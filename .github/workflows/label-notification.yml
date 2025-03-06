@@ -28,8 +28,7 @@ jobs:
           username: apikey
           password: ${{ secrets.SENDGRID_API_KEY }}
           subject: "PR Ready for Code Review"
-          to: |
-            prince@empowerlearning.net
+          to: prince@empowerlearning.net
           from: prince@empowerlearning.net
           body: |
             A pull request has been labeled as "Ready for Code Review".
